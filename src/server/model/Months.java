@@ -1,0 +1,5 @@
+package server.model;
+
+public enum Months {
+	JANYARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER
+}

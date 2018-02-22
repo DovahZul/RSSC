@@ -1,6 +1,10 @@
 package server.main;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+import server.model.CommandModel;
 
 public class ServerMainThread extends Thread{
 
@@ -21,6 +25,17 @@ public class ServerMainThread extends Thread{
 	public void run() {
 		System.out.println("starting main thread");
 		try {
+
+			final List<CommandModel> list = new ArrayList<CommandModel>();
+			SqlObserver sobs = (s) -> {
+
+				int id = s.getInt("id");
+				//...
+				CommandModel tmp = new CommandModel();
+						list.add(tmp);
+			};
+			DataBaseManager.executeQueryResult("Select * from data", sobs);
+
 			while(true){
 				System.out.println("main server thread is running...");
 				Thread.sleep(10000);
