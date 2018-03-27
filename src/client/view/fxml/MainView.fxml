@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane prefHeight="452.0" prefWidth="693.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.fxml.MainClientController">
+  <bottom>
+    <ProgressIndicator progress="0.0" />
+  </bottom>
+  <center>
+    <TabPane prefHeight="463.0" prefWidth="721.0" tabClosingPolicy="UNAVAILABLE">
+      <tabs>
+        <Tab text="Commands">
+          <content>
+            <BorderPane prefHeight="200.0" prefWidth="200.0">
+              <center>
+                <TableView fx:id="tableCommands" editable="true" prefHeight="200.0" prefWidth="200.0">
+                  <columns>
+                    <TableColumn fx:id="columnCommand" maxWidth="5000.0" minWidth="10.0" prefWidth="120.0" text="Command" />
+                    <TableColumn fx:id="columnType" maxWidth="5000.0" minWidth="10.0" prefWidth="82.0" text="Type" />
+                    <TableColumn fx:id="columnEnabled" maxWidth="5000.0" minWidth="10.0" prefWidth="89.0" text="Enabled" />
+                    <TableColumn fx:id="columnProperties" maxWidth="5000.0" minWidth="10.0" prefWidth="397.0" text="Properties" />
+                  </columns>
+                </TableView>
+              </center>
+              <top>
+                <AnchorPane prefHeight="154.0" prefWidth="693.0">
+                  <children>
+                    <Label layoutX="23.0" layoutY="3.0" prefHeight="20.999908447265625" text="Command" />
+                    <Button layoutX="441.0" layoutY="22.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="58.0" text="File" />
+                    <Label layoutX="511.0" layoutY="3.0" prefHeight="20.999908447265625" text="Type:" />
+                    <SplitMenuButton layoutX="511.0" layoutY="23.0" mnemonicParsing="false" text="SplitMenuButton">
+                      <items>
+                        <MenuItem mnemonicParsing="false" text="Action 1" />
+                        <MenuItem mnemonicParsing="false" text="Action 2" />
+                      </items>
+                    </SplitMenuButton>
+                    <Label layoutX="613.0" layoutY="58.0" prefHeight="20.999908447265625" text="Status:" />
+                    <RadioButton layoutX="613.0" layoutY="79.0" mnemonicParsing="false" text="Enabled" />
+                    <RadioButton layoutX="613.0" layoutY="105.0" mnemonicParsing="false" text="Disabled" />
+                    <TextField layoutX="140.0" layoutY="79.0" prefWidth="37.9998779296875" />
+                    <Label layoutX="23.0" layoutY="50.0" prefHeight="20.999908447265625" text="" />
+                    <CheckBox layoutX="21.0" layoutY="64.0" mnemonicParsing="false" text="Mon" />
+                    <CheckBox layoutX="21.0" layoutY="90.0" mnemonicParsing="false" text="Thue" />
+                    <CheckBox layoutX="21.0" layoutY="114.0" mnemonicParsing="false" text="Wed" />
+                    <CheckBox layoutX="21.0" layoutY="137.0" mnemonicParsing="false" text="Thur" />
+                    <CheckBox layoutX="82.0" layoutY="64.0" mnemonicParsing="false" text="Fri" />
+                    <CheckBox layoutX="82.0" layoutY="90.0" mnemonicParsing="false" text="Sat" />
+                    <CheckBox layoutX="82.0" layoutY="114.0" mnemonicParsing="false" text="Sun" />
+                    <Label layoutX="141.0" layoutY="58.0" prefHeight="20.999908447265625" text="Time:" />
+                    <TextField layoutX="188.0" layoutY="78.0" prefWidth="38.0" />
+                    <Label layoutX="181.0" layoutY="81.0" minWidth="0.0" prefHeight="21.0" prefWidth="7.9998779296875" text=":" />
+                    <Button fx:id="buttonSave" mnemonicParsing="false" onAction="#loadCommands" text="Save" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                    <TextArea layoutX="18.0" layoutY="21.0" prefHeight="24.000099999997474" prefWidth="415.0" wrapText="true" />
+                  </children>
+                </AnchorPane>
+              </top>
+            </BorderPane>
+          </content>
+        </Tab>
+        <Tab text="Terminal">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox layoutX="240.0" layoutY="48.0" prefHeight="344.0" prefWidth="693.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <TextArea prefHeight="299.0" prefWidth="693.0" />
+                              <TextArea prefHeight="141.0" prefWidth="693.0" />
+                           </children>
+                        </VBox>
+                     </children></AnchorPane>
+          </content>
+        </Tab>
+      </tabs>
+    </TabPane>
+  </center>
+  <top>
+    <MenuBar>
+      <menus>
+        <Menu mnemonicParsing="false" text="Connection">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Connect to host..." />
+            <MenuItem mnemonicParsing="false" text="Update" />
+            <MenuItem mnemonicParsing="false" text="Terminate connection..." />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="About" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Settings">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Delete" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+  </top>
+</BorderPane>

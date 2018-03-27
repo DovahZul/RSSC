@@ -32,15 +32,16 @@ public class ServerMainApp{
 
 
 		}
-		 ServerSocket server = new ServerSocket(8072);
+		 ServerSocket server = new ServerSocket(8073);
          System.out.println("Сервер готов к работе");
          ServerMainThread mainThread = new ServerMainThread();
-         mainThread.run();
+         mainThread.start();
          while (true) {
+        	 System.out.println("Запуск прослушивающего потока...");
              Socket socket = server.accept();
              System.out.println( "Подключился: "+socket.getInetAddress().getHostName());
              ServerControlThread controlThread = new ServerControlThread(socket);
-             controlThread.setDaemon(true);
+             //controlThread.setDaemon(true);
              controlThread.start();
          }
 
