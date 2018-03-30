@@ -13,10 +13,11 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane minHeight="500.0" minWidth="600.0" prefHeight="452.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.fxml.MainClientController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="550.0" minWidth="700.0" prefHeight="550.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.fxml.MainClientController">
   <center>
     <TabPane prefHeight="463.0" prefWidth="721.0" tabClosingPolicy="UNAVAILABLE">
       <tabs>
@@ -38,11 +39,11 @@
                               <Button layoutX="215.0" layoutY="216.0" mnemonicParsing="false" text="Delete" AnchorPane.leftAnchor="215.0" />
                               <TextField fx:id="fieldPropertyValue" layoutX="5.0" layoutY="259.0" prefHeight="26.0" prefWidth="109.0" AnchorPane.leftAnchor="5.0" />
                               <TextField fx:id="fieldPropertyName" layoutX="5.0" layoutY="217.0" prefHeight="26.0" prefWidth="110.0" AnchorPane.leftAnchor="5.0" />
-                              <Button layoutX="128.0" layoutY="216.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="75.0" text="Update" />
+                              <Button layoutX="128.0" layoutY="216.0" mnemonicParsing="false" onAction="#rewriteObservableProperty" prefHeight="26.0" prefWidth="75.0" text="Update" />
                               <Label layoutX="11.0" layoutY="201.0" text="Name" />
                               <Label layoutX="11.0" layoutY="243.0" text="Value" />
                               <Button layoutX="9.0" layoutY="295.0" mnemonicParsing="false" text="Add new" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
-                              <Button fx:id="buttonSave" layoutX="183.0" layoutY="290.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="106.0" text="Apply" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                              <Button fx:id="buttonSave" layoutX="183.0" layoutY="290.0" mnemonicParsing="false" onAction="#rewriteObservableCommand" prefHeight="26.0" prefWidth="106.0" text="Apply" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
                            </children>
                         </AnchorPane>
                      </right>
@@ -71,31 +72,26 @@
         </Tab>
         <Tab text="Terminal">
                <content>
-                  <BorderPane prefHeight="200.0" prefWidth="200.0">
-                     <center>
-                        <SplitPane dividerPositions="0.7777777777777778" orientation="VERTICAL" prefHeight="344.0" prefWidth="693.0" BorderPane.alignment="CENTER">
+                  <AnchorPane>
+                     <children>
+                        <SplitPane dividerPositions="0.5" minWidth="400.0" orientation="VERTICAL" prefHeight="422.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
                           <items>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="218.0" prefWidth="691.0">
                                  <children>
-                                    <TextArea fx:id="outputTerminal" prefHeight="262.0" prefWidth="691.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <TextArea fx:id="outputTerminal" editable="false" prefHeight="262.0" prefWidth="691.0" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                  </children>
                               </AnchorPane>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                            <AnchorPane maxHeight="100.0" minHeight="100.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                  <children>
-                                    <TextArea fx:id="inputTerminal" prefHeight="72.0" prefWidth="691.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <TextArea fx:id="inputTerminal" maxHeight="100.0" minHeight="100.0" prefHeight="72.0" prefWidth="691.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                  </children>
                               </AnchorPane>
                           </items>
                         </SplitPane>
-                     </center>
-                     <right>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                           <children>
-                              <Button fx:id="buttonTerminalInput" layoutX="14.0" layoutY="305.0" mnemonicParsing="false" onAction="#ExecuteTerminalCommand" text="Button" />
-                           </children>
-                        </AnchorPane>
-                     </right>
-                  </BorderPane>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="544.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                        <Button fx:id="buttonTerminalInput" layoutX="612.0" layoutY="445.0" mnemonicParsing="false" onAction="#ExecuteTerminalCommand" text="Execute" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="610.0" />
+                     </children>
+                  </AnchorPane>
                </content>
         </Tab>
       </tabs>

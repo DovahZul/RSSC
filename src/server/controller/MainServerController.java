@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 
 public class MainServerController {
 
+	private static final String BASH_GREETING="[\\d \\A]\\u@\\h:\\w\\$'";
+
 	public static void executeCommands(String script) throws IOException, InterruptedException {
 
 	   // File tempScript = createTempScript();
@@ -28,8 +30,9 @@ public class MainServerController {
 	 * @param command
 	 * @return true if bash got started, but your command may have failed.
 	 */
-	public static boolean executeBashCommand(String command) {
+	public static String executeBashCommand(String command) {
 	    boolean success = false;
+	    String output="";
 	    System.out.println("Executing BASH command:   " + command);
 	    Runtime r = Runtime.getRuntime();
 	    // Use bash -c so we can handle things like multi commands separated by ; and
@@ -47,6 +50,7 @@ public class MainServerController {
 
 	        while ((line = b.readLine()) != null) {
 	            System.out.println(line);
+	            output+=line+"\n";
 	        }
 
 	        b.close();
@@ -55,7 +59,14 @@ public class MainServerController {
 	        System.err.println("Failed to execute bash with command: " + command);
 	        e.printStackTrace();
 	    }
-	    return success;
+	    return output;
+	}
+	public  static String getTerminalGreeting()
+	{
+		String str="";
+		 String sysEnvStr = System.getenv("PS1");
+		return sysEnvStr;
+
 	}
 
 }

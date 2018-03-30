@@ -17,6 +17,17 @@ public class CommandProperty implements Serializable{
 		return this.val;
 	}
 
+	///SET///
+
+	public void setName(String name)
+	{
+		this.name=name;
+	}
+	public void setValue(int value)
+	{
+		this.val=value;
+	}
+
 	public int getId() {
 		return commId;
 	}

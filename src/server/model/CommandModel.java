@@ -29,16 +29,19 @@ public class CommandModel implements Serializable{
 	private  List<Integer> month=new ArrayList<Integer>();
 
 	List<CommandProperty> command_properties = new ArrayList<CommandProperty>();
-	//CommandProperty[]
 
-	public void addProperty(CommandProperty prop) {
-		command_properties.add(prop);
-	}
+
+
+	///GET///
 
 	public CommandProperty[] getProperties() {
 		CommandProperty[] array = new CommandProperty[command_properties.size()];
 		return command_properties.toArray(array);
 	};
+	public List<CommandProperty> getPropertiesList() {
+		return command_properties;
+	};
+
 
 	public List<Integer> getSeconds()
 	{
@@ -74,6 +77,35 @@ public class CommandModel implements Serializable{
 		return this.active;
 	}
 
+	///ADD///
+
+	public void addProperty(CommandProperty prop) {
+		command_properties.add(prop);
+	}
+
+	///SET///
+
+	public void setCommandContext(String context)
+	{
+		this.command=context;
+	}
+	public void setActive(boolean active)
+	{
+		this.active=active;
+	}
+	public void setType(int type)
+	{
+		this.type=type;
+	}
+	public void setProperties(List<CommandProperty> props)
+	{
+		this.command_properties=props;
+	}
+
+	public void replaceCommandById(int id, CommandModel command)
+	{
+
+	}
 
 	public CommandModel(String context, boolean active, List<CommandProperty> prop) {
 		//this.id = id;

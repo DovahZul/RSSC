@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.List;
 
+import server.controller.MainServerController;
 import server.model.CommandModel;
 import server.model.CommandProperty;
 
@@ -19,6 +20,7 @@ public class ServerControlThread extends Thread{
 	private BufferedReader is;
 	private PrintStream os;
 	private InetAddress addr;
+	private static final String TERMINAL_MODIFIER="BASH-TERMINAL";
 
 	public ServerControlThread(Socket s) throws IOException{
 		socket = s;
@@ -42,35 +44,19 @@ public class ServerControlThread extends Thread{
 
 
 			while((str = (String)deserializer.readObject()) != null){
-				System.out.println("thread-listener is running...");
+				System.out.println("[SERVER]thread-listener is running...");
 
-				/*if("BASH-TERMINAL".equals(str.substring(0, "BASH-TERMINAL".length())))
+				if(str.length()>13)
+				if(TERMINAL_MODIFIER.compareTo( str.substring(0, TERMINAL_MODIFIER.length())  ) == 0)
 				{
-					try {
 
-						Runtime rt = Runtime.getRuntime();
-				    	Process proc = rt.exec(str.substring(13, str.length()));
-						proc.waitFor();
-
-						BufferedReader is = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-						String line;
-
-						String result = "";
-						while ((line = is.readLine()) != null) {
-							result += line + "\n";
-						}
-						System.err.print("TERMINAL OUTPUT:"+result);
-						serializer.writeObject(result);
-
-					}
-						//SendMessage message = new SendMessage().setChatId(update.getMessage().getChatId()).setText(result);
-
-						catch(Exception e)
-						{
-
-						}
-					}*/
-
+					System.out.println("[SERVER] EXECUTING BASH-TERMINAL:"+str.substring(13, str.length() ));
+					//serializer.writeObject((String)MainServerController.executeBashCommand( str.substring(13, str.length() )) );
+					serializer.writeObject((String)"GREETING:"+MainServerController.getTerminalGreeting());
+					socket.shutdownInput();
+					socket.close();
+					System.err.println("[SERVER] Connection closed");
+				}else
 				if("SaveCommands".equals(str))
 				{
 
@@ -79,7 +65,7 @@ public class ServerControlThread extends Thread{
 				{
 					List<CommandModel> l=DataBaseManager.getRegularCommads();
 					//serializer.writeObject(l);
-					System.out.println("Send commands for client:");
+					System.out.println("{SERVER] Send commands for client:");
 					for(CommandModel item : l)
 					{
 						serializer.writeObject(item);
@@ -96,7 +82,7 @@ public class ServerControlThread extends Thread{
 					serializer.writeObject("FINISH");
 					socket.shutdownInput();
 					socket.close();
-					System.err.println("Server connection closed");
+					System.err.println("[SERVER] Connection closed");
 
 					return;
 				}
@@ -108,8 +94,7 @@ public class ServerControlThread extends Thread{
 			}
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//System.out.println("[SERVER]");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

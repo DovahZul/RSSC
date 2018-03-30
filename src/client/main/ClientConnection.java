@@ -122,24 +122,34 @@ public class ClientConnection {
 
     public static String SendCommandString(String script) throws IOException
     {
+    	connection();
     	String str;
 
-    	serializer.writeObject("BASH-TERMINAL"+script);
+    	System.out.println("SendCommandStrng script="+script);
+
+    	if(script==null)
+    	{
+    		System.out.println("SendCommandStrng got null! Aborting.");
+    		return null;
+    	}
+
 		System.out.println("Sending bash command from client:"+script);
-		serializer.flush();
+		serializer.writeObject("BASH-TERMINAL"+script);
+
+		//serializer.flush();
 		try
 		{
 		str= (String)deserializer.readObject();
 		return str;
 		}catch(IOException e)
 		{
-			System.out.println(e+ " IO error while getting terminal callback, return null!");
+			System.out.println(e+ "[CLIENT] IO error while getting terminal callback! Aborting.");
 		}
 		catch (ClassNotFoundException e) {
 			System.out.println(e+ " Class not found error while getting terminal callback, return null! ");
 		}
 
-		return null;
+		return "null pointer";
 
 
     }

@@ -20,6 +20,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import server.model.CommandModel;
 import server.model.CommandProperty;
 
@@ -54,6 +55,9 @@ public class MainClientController implements Initializable {
 	@FXML Label statusLabel;
 
 	public static List<CommandModel> loadedCommands;
+	public static CommandModel observableCommand;
+	public static List<CommandProperty> loadedProperties;
+	public static CommandProperty observableProperty;
 
 	private String getStringProperty(CommandProperty[] p) {
 		String seconds = "seconds:";
@@ -89,15 +93,11 @@ public class MainClientController implements Initializable {
 		return seconds+minutes+hours+days+months;
 	}
 
+
 	@FXML
 	void loadCommands() throws UnknownHostException, IOException
 	{
-
-
 		ClientConnection.connection();
-		//ClientConnection.SendCommandString("notify-send \"ALALA\"");
-		//ClientConnection.SendCommandString("ls /etc");
-        //List<CommandModel> list=null;
 		try {
 			loadedCommands = ClientConnection.getCommands();
 		} catch (InterruptedException e) {
@@ -132,14 +132,25 @@ public class MainClientController implements Initializable {
 
 	@FXML boolean ExecuteTerminalCommand()
 	{
-		if(inputTerminal.getText()!=null)return false;
+
+		if(inputTerminal.getText().isEmpty())
+			{
+			System.out.println("Input-terminal field is empty! Aborting.");
+			return false;
+			}
 		try
 		{
 			outputTerminal.setText(ClientConnection.SendCommandString(inputTerminal.getText()));
+			//outputTerminal.selectPositionCaret(outputTerminal.getLength());
+			//outputTerminal.deselect(); //removes the highlighting
+			outputTerminal.appendText("");
+
+			inputTerminal.clear();
+
 			return true;
 		}catch(IOException e)
 		{
-			System.out.println("CLientCOntroller: ExecuteCommandFailed:"+e);
+			System.out.println("ClientlOntroller: ExecuteCommandFailed:"+e);
 			return false;
 		}
 	}
@@ -149,32 +160,36 @@ public class MainClientController implements Initializable {
 		try
 		{
 			int selectedIndex = this.tableCommands.getSelectionModel().getSelectedIndex();
-			if(selectedIndex<0)
+			if(selectedIndex < 0)
 			{
 				return false;
 			}else
 			{
-				CommandModel m=(CommandModel) this.tableCommands.getItems().get(selectedIndex);
-				setStatusLabetText("Selected item:"+m.getCommand()+"ID:"+m.getId());
-				if(m.getProperties().length>0)
+				observableCommand = (CommandModel) this.tableCommands.getItems().get(selectedIndex);
+				loadedProperties = observableCommand.getPropertiesList();
+				setStatusLabetText("Selected item:" + observableCommand.getCommand() + "ID:"+observableCommand.getId());
+				if(observableCommand.getProperties().length > 0)
 				{
 					final ObservableList<CommandProperty> properties = FXCollections.observableArrayList();
-					for(CommandProperty property : m.getProperties())
+					for(CommandProperty property : loadedProperties)
 				    {
 						properties.add(property);
-						System.err.println("Property:"+property.getName());
-						System.err.println("Value:"+property.getValue());
+						System.err.println("Property:" + property.getName());
+						System.err.println("Value:" + property.getValue());
 
 				    }
 					tableProperties.setItems(properties);
 				}
 
-				this.fieldCommandContext.setText(m.getCommand());
+				this.fieldCommandContext.setText(observableCommand.getCommand());
 				//(m.isActive())?this.checkBoxEnabled.setSelected(true);:this.checkBoxEnabled.setSelected(false);
-				if(m.isActive())
+				if(observableCommand.isActive())
 					this.checkBoxEnabled.setSelected(true);
 				else
 					this.checkBoxEnabled.setSelected(false);
+
+				rewriteObservableCommand();
+
 
 				return true;
 			}
@@ -191,17 +206,86 @@ public class MainClientController implements Initializable {
 			return false;
 		}else
 		{
-			CommandProperty p=(CommandProperty) this.tableProperties.getItems().get(selectedIndex);
-			setStatusLabetText("Selected property:"+p.getName()+"Value:"+p.getValue());
+			observableProperty=(CommandProperty) this.tableProperties.getItems().get(selectedIndex);
+			setStatusLabetText("Selected property:"+observableProperty.getName()+"Value:"+observableProperty.getValue()+":"+selectedIndex);
 
-			this.fieldPropertyName.setText(p.getName());
-			this.fieldPropertyValue.setText(String.valueOf(p.getValue()));
+			this.fieldPropertyName.setText(observableProperty.getName());
+			this.fieldPropertyValue.setText(String.valueOf(observableProperty.getValue()));
 
 
 
 		}
 
 		return true;
+
+	}
+
+	@FXML
+	public void rewriteObservableCommand()
+	{
+		//CommandModel tempCommand = new CommandModel(this.fieldCommandContext.getText(), t, null);
+		setStatusLabetText(String.valueOf(observableCommand.getId()));
+		if(this.fieldCommandContext.getText().compareTo(MainClientController.observableCommand.getCommand())!=0)
+		{
+			loadedCommands.get(observableCommand.getId()-1) .setCommandContext((this.fieldCommandContext.getText()));
+		}
+		if(this.checkBoxEnabled.isSelected() && observableCommand.isActive())
+		{
+			loadedCommands.get(observableCommand.getId()-1) .setActive(checkBoxEnabled.isSelected());
+		}
+
+		refreshCommandView();
+
+	}
+
+	@FXML
+	public void rewriteObservableProperty()
+	{
+
+			List<CommandProperty>temp = loadedProperties;
+			for(CommandProperty pr: temp)
+			{
+
+				if(pr.getName().compareTo(fieldPropertyName.getText())==0)
+					if(pr.getValue()!=Integer.parseInt(fieldPropertyValue.getText()))
+					{
+						//pr.setValue(Integer.parseInt(fieldPropertyValue.getText()));
+						//return;
+						temp.add(new CommandProperty(observableCommand.getId(),
+								fieldPropertyName.getText(),
+								Integer.parseInt(fieldPropertyValue.getText())));
+						return;
+
+					}
+				loadedProperties=temp;
+
+			}
+		}
+
+
+
+	//}
+
+	public void refreshCommandView()
+	{
+		final ObservableList<CommandModel> commanList = FXCollections.observableArrayList();
+
+        for(CommandModel model : loadedCommands)
+        {
+      	  commanList.add(model);
+        	System.err.println("Command:"+model.getCommand());
+        	System.err.println("Type:"+model.getType());
+        	if(model.getProperties().length<=0)System.err.println("ZERO PROP LENGTH");
+        	for(CommandProperty p : model.getProperties())
+        	{
+        		System.err.println(p.getName()+":"+p.getValue());
+        	}
+        }
+    	setStatusLabetText("UPDATED");
+
+
+        tableCommands.refresh();
+    	tableProperties.refresh();
 
 	}
 
@@ -216,6 +300,15 @@ public class MainClientController implements Initializable {
 		// TODO Auto-generated method stub
 		this.columnCommand.setEditable(true);
 		this.columnCommand.setResizable(true);
+
+		inputTerminal.setOnKeyPressed(e -> {
+			 if (e.isAltDown()  &&  e.getCode()==KeyCode.ENTER)
+
+			   {
+				 	ExecuteTerminalCommand();
+			   }
+		}
+		);
 
 
         columnCommand.setCellValueFactory(
