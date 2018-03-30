@@ -1,6 +1,8 @@
 package server.model;
 
-public class CommandProperty {
+import java.io.Serializable;
+
+public class CommandProperty implements Serializable{
 
 	private int commId;
 	private String name;
@@ -24,6 +26,10 @@ public class CommandProperty {
 		this.commId=i;
 		this.name=n;
 		this.val=v;
+	}
+	public String toString()
+	{
+		return "name:"+this.getName()+"; val:"+this.getValue();
 	}
 
 

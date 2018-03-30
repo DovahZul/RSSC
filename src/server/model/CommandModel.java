@@ -28,7 +28,8 @@ public class CommandModel implements Serializable{
 	private  List<Integer> day=new ArrayList<Integer>();
 	private  List<Integer> month=new ArrayList<Integer>();
 
-	static List<CommandProperty> command_properties = new ArrayList<CommandProperty>();
+	List<CommandProperty> command_properties = new ArrayList<CommandProperty>();
+	//CommandProperty[]
 
 	public void addProperty(CommandProperty prop) {
 		command_properties.add(prop);

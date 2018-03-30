@@ -12,14 +12,15 @@ public class ClientControlThread implements Runnable{
 		// TODO Auto-generated method stub
 		Socket socket = null;
         BufferedReader br = null;
+        /*
         try {
         	System.out.println("Starting terminal client...");
             //MainClientController controller = new MainClientController();
             //ClientMainApp a=new ClientMainApp();
             //a.init();
             //controller.startApplication();
-            ClientConnection.connection();
-            ClientConnection.getCommands();
+           // ClientConnection.connection();
+            //ClientConnection.getCommands();
 
         } catch (UnknownHostException e) {
             System.err.println("адрес недоступен" + e);
@@ -41,7 +42,7 @@ public class ClientControlThread implements Runnable{
                 }
             }
         }
-
+*/
 
 	}
 

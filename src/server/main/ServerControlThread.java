@@ -44,7 +44,7 @@ public class ServerControlThread extends Thread{
 			while((str = (String)deserializer.readObject()) != null){
 				System.out.println("thread-listener is running...");
 
-				if("BASH-TERMINAL".equals(str.substring(0, "BASH-TERMINAL".length())))
+				/*if("BASH-TERMINAL".equals(str.substring(0, "BASH-TERMINAL".length())))
 				{
 					try {
 
@@ -60,6 +60,8 @@ public class ServerControlThread extends Thread{
 							result += line + "\n";
 						}
 						System.err.print("TERMINAL OUTPUT:"+result);
+						serializer.writeObject(result);
+
 					}
 						//SendMessage message = new SendMessage().setChatId(update.getMessage().getChatId()).setText(result);
 
@@ -67,7 +69,7 @@ public class ServerControlThread extends Thread{
 						{
 
 						}
-					}
+					}*/
 
 				if("SaveCommands".equals(str))
 				{
@@ -91,6 +93,11 @@ public class ServerControlThread extends Thread{
 					//serializer.flush();
 					//deserializer.close();
 					//serializer.close();
+					serializer.writeObject("FINISH");
+					socket.shutdownInput();
+					socket.close();
+					System.err.println("Server connection closed");
+
 					return;
 				}
 
