@@ -262,6 +262,10 @@ public class CommandModel implements Serializable{
 	//	this.count--;
 
 	}
+	public void setId(int id) {
+		this.id=id;
+
+	}
 
 //	public int getCount() {
 		// TODO Auto-generated method stub

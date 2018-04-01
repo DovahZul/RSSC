@@ -3,6 +3,10 @@ package server.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.pty4j.PtyProcess;
 
 public class MainServerController {
 
@@ -42,22 +46,31 @@ public class MainServerController {
 	    // so having bash here makes it happy provided bash is installed and in path.
 	    String[] commands = {"bash", "-c", command};
 	    try {
-	        Process p = r.exec(commands);
+	      Process p = Runtime.getRuntime().exec(new String[] { "/bin/bash", "-c", command });
+	        //ProcessBuilder p = new ProcessBuilder("/bin/bash", scriptPath + script).start();
 
-	        p.waitFor();
 	        BufferedReader b = new BufferedReader(new InputStreamReader(p.getInputStream()));
+	        BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 	        String line = "";
 
 	        while ((line = b.readLine()) != null) {
 	            System.out.println(line);
 	            output+=line+"\n";
 	        }
-
 	        b.close();
+
+	        while ((line = err.readLine()) != null) {
+	            System.out.println(line);
+	            output+=line+"\n";
+	        }
+	        err.close();
+	        p.waitFor();
+
 	        success = true;
 	    } catch (Exception e) {
-	        System.err.println("Failed to execute bash with command: " + command);
+	        System.err.println("[SERVER] Failed to execute bash command: " + command);
 	        e.printStackTrace();
+	       output+=e.getLocalizedMessage();
 	    }
 	    return output;
 	}

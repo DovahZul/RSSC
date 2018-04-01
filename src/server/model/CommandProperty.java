@@ -42,6 +42,11 @@ public class CommandProperty implements Serializable{
 	{
 		return "name:"+this.getName()+"; val:"+this.getValue();
 	}
+	public void setId(int id) {
+		// TODO Auto-generated method stub
+		this.commId=id;
+
+	}
 
 
 }

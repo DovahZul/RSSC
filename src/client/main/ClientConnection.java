@@ -48,20 +48,6 @@ public class ClientConnection {
         	{
         		serializer.writeObject("GetComm");
         		System.out.println("Loading commands from database...");
-        		//while(deserializer.readObject()!=null)
-        		//while(deserializer.available()!=0)
-
-        		/*
-        		CommandModel model;
-
-        		if(is.available()>0) System.out.println("deserializer available");
-        		else System.out.println("deserializer NOT availavle");
-
-        		while((model = (CommandModel)deserializer.readObject()) != null)
-        		{
-        			l.add(model);
-        		}
-        		*/
 
     		Object model = "";
     		do

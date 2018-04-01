@@ -47,15 +47,17 @@ public class ServerControlThread extends Thread{
 				System.out.println("[SERVER]thread-listener is running...");
 
 				if(str.length()>13)
-				if(TERMINAL_MODIFIER.compareTo( str.substring(0, TERMINAL_MODIFIER.length())  ) == 0)
 				{
+					if(TERMINAL_MODIFIER.compareTo( str.substring(0, TERMINAL_MODIFIER.length())  ) == 0)
+					{
 
 					System.out.println("[SERVER] EXECUTING BASH-TERMINAL:"+str.substring(13, str.length() ));
-					//serializer.writeObject((String)MainServerController.executeBashCommand( str.substring(13, str.length() )) );
-					serializer.writeObject((String)"GREETING:"+MainServerController.getTerminalGreeting());
+					serializer.writeObject((String)MainServerController.executeBashCommand( str.substring(13, str.length() )) );
+					//serializer.writeObject((String)"GREETING:"+MainServerController.getTerminalGreeting());
 					socket.shutdownInput();
 					socket.close();
 					System.err.println("[SERVER] Connection closed");
+					}
 				}else
 				if("SaveCommands".equals(str))
 				{
@@ -63,9 +65,10 @@ public class ServerControlThread extends Thread{
 				}else
 				if("GetComm".equals(str))
 				{
+					System.out.println("{SERVER] SENDING COMMANDS FOR CLIENT...");
 					List<CommandModel> l=DataBaseManager.getRegularCommads();
 					//serializer.writeObject(l);
-					System.out.println("{SERVER] Send commands for client:");
+
 					for(CommandModel item : l)
 					{
 						serializer.writeObject(item);
