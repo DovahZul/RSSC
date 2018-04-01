@@ -2,6 +2,7 @@ package server.main;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -9,6 +10,7 @@ import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.List;
 
 import server.controller.MainServerController;
@@ -17,7 +19,7 @@ import server.model.CommandProperty;
 
 public class ServerControlThread extends Thread{
 	private Socket socket;
-	private BufferedReader is;
+	private InputStream is;
 	private PrintStream os;
 	private InetAddress addr;
 	private static final String TERMINAL_MODIFIER="BASH-TERMINAL";
@@ -25,7 +27,8 @@ public class ServerControlThread extends Thread{
 	public ServerControlThread(Socket s) throws IOException{
 		socket = s;
 		addr = s.getInetAddress();
-		is = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		//is = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		is = socket.getInputStream();
 		os = new PrintStream(s.getOutputStream());
 
 	}
@@ -88,6 +91,58 @@ public class ServerControlThread extends Thread{
 					System.err.println("[SERVER] Connection closed");
 
 					return;
+				}else
+				if("SendComm".equals(str))
+				{
+					System.out.println("[SERVER] receiving command list from client...");
+					List<CommandModel> tempCommandList = new ArrayList<>();
+					Object model = "";
+					try
+					{
+						do
+						{
+							if(is.available() > 0)
+							{
+			    				model=deserializer.readObject();
+			    				System.out.println("ПОПАЛИ В readObj");
+			    				if (model.getClass().getSimpleName().compareTo("CommandModel") == 0)
+			    					tempCommandList.add((CommandModel)model);
+			    			}
+			    				else System.out.println("DDeserializer NOT available");
+
+							System.out.println("STRING SIMPLE NAME="+model.getClass().getSimpleName());
+			    			if (model.getClass().getSimpleName().compareTo("String") == 0)
+			    			{
+			    				System.out.println("MOdel="+model);
+			    				if (((String)model).compareTo("FINISH") == 0)
+			    				{
+
+			    					System.out.println("STOP STRING COMMAND");
+			    					break;
+			    				}
+			    			}
+			    		}
+			    		while(socket.isConnected() && !socket.isInputShutdown());
+
+
+
+					}
+					catch(Exception e)
+					{
+
+					}
+
+					System.out.println("[SERVER] got commands from client:");
+		    		for(CommandModel item : tempCommandList)
+					{
+						System.out.println(item.getCommand()+":"+item.getType()+":"+item.isActive());
+						System.out.println("Properties count="+item.getProperties().length);
+						for(CommandProperty p : item.getProperties())
+						{
+							System.out.println(p.getName()+":"+p.getValue());
+						}
+					}
+
 				}
 
 

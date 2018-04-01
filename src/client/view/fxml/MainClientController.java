@@ -3,12 +3,24 @@ package client.view.fxml;
 import java.io.IOException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-
+import java.util.Timer;
+import java.util.TimerTask;
 
 import client.main.ClientConnection;
 import client.model.Property;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,6 +38,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import server.model.CommandModel;
 import server.model.CommandProperty;
 
@@ -56,6 +69,7 @@ public class MainClientController implements Initializable {
 
 	@FXML TextArea inputTerminal;
 	@FXML TextArea outputTerminal;
+	@FXML TextArea infoOutputArea;
 
 	@FXML TextField fieldPropertyName;
 	@FXML TextField fieldPropertyValue;
@@ -63,8 +77,10 @@ public class MainClientController implements Initializable {
 
 	@FXML CheckBox checkBoxEnabled;
 
+	@FXML Label dateTimeLabel;
 
-	@FXML Label statusLabel;
+
+//	@FXML Label statusLabel;
 
 	public static List<CommandModel> loadedCommands;
 	public static CommandModel observableCommand;
@@ -90,6 +106,12 @@ public class MainClientController implements Initializable {
 		return temp;
 	}
 
+	public void fxVerbose(String message)
+	{
+		this.infoOutputArea.appendText(message+"\n");
+		//this.infoOutputArea.appendText("TEST");
+	}
+
 
 	@FXML
 	void loadCommands() throws UnknownHostException, IOException
@@ -99,26 +121,25 @@ public class MainClientController implements Initializable {
 		{
 			loadedCommands = ClientConnection.getCommands();
 			RefreshDisplayValues();
+			fxVerbose("Commands loaded.");
 		}
 		catch (InterruptedException e)
 		{
 			e.printStackTrace();
+			fxVerbose("Failed to load commands.");
 		}
 
-
-
-/*
-          columnPropertyName.setCellValueFactory(
-        		    new PropertyValueFactory<CommandProperty,String>("name")
-        		);
-          columnPropertyValue.setCellValueFactory(
-      		    new PropertyValueFactory<CommandProperty,String>("value")
-      		);
-*/
-
-         // commandList = FXCollections.observableArrayList();
-
-
+	}
+	@FXML
+	void saveCommands() throws UnknownHostException, IOException
+	{
+		if(ClientConnection.sendCommands(loadedCommands))
+		{
+			fxVerbose("Commands saved to server.");
+		}else
+		{
+			fxVerbose("Failed to save commamds.");
+		}
 
 	}
 
@@ -173,7 +194,8 @@ public class MainClientController implements Initializable {
 		 else
 		 {
 			 tableCommands.setItems(commandList);
-			 statusLabel.setText("commandList:"+commandList.size()+"loadedCommands:"+loadedCommands.size());
+			 //statusLabel.setText("commandList:"+commandList.size()+"loadedCommands:"+loadedCommands.size());
+			 //fxVerbose("commandList:"+commandList.size()+"loadedCommands:"+loadedCommands.size());
 		 }
 
 
@@ -218,7 +240,7 @@ public class MainClientController implements Initializable {
 			{
 				observableCommand = (CommandModel) this.tableCommands.getItems().get(observableCommandIndex);
 				loadedProperties = observableCommand.getPropertiesList();
-				setStatusLabetText("Selected item:" + observableCommand.getCommand() + "ID:"+observableCommand.getId());
+				//fxVerbose("Selected item:" + observableCommand.getCommand() + "ID:"+observableCommand.getId());
 				if(observableCommand.getProperties().length > 0)
 				{
 					propertiesList.clear();
@@ -261,7 +283,7 @@ public class MainClientController implements Initializable {
 		}else
 		{
 			observableProperty=(CommandProperty) this.tableProperties.getItems().get(observablePropertyIndex);
-			setStatusLabetText("Selected property:"+observableProperty.getName()+"Value:"+observableProperty.getValue()+":"+observablePropertyIndex);
+			//fxVerbose("Selected property:"+observableProperty.getName()+"Value:"+observableProperty.getValue()+":"+observablePropertyIndex);
 
 			this.fieldPropertyName.setText(observableProperty.getName());
 			this.fieldPropertyValue.setText(String.valueOf(observableProperty.getValue()));
@@ -276,7 +298,7 @@ public class MainClientController implements Initializable {
 	public void rewriteObservableCommand()
 	{
 		//CommandModel tempCommand = new CommandModel(this.fieldCommandContext.getText(), t, null);
-		setStatusLabetText(String.valueOf(observableCommand.getId()));
+		//fxVerbose(String.valueOf(observableCommand.getId()));
 		if(this.fieldCommandContext.getText().compareTo(MainClientController.observableCommand.getCommand())!=0)
 		{
 			loadedCommands.get(observableCommand.getId()-1) .setCommandContext((this.fieldCommandContext.getText()));
@@ -438,35 +460,58 @@ public class MainClientController implements Initializable {
 			/*deleting existing property*/
 			if(pr.getName().compareTo(tempProperty.getName())==0 && pr.getValue()==tempProperty.getValue())
 			{
-				//if(pr.getValue()==tempProperty.getValue())
-				//{
-					if(temp.remove(pr))
-						System.out.println("[CLIENT] Property removed." + tempProperty.getName()+":" + tempProperty.getValue());
-					else
-					{
-						System.out.println("[CLIENT] Property not deleted!." + tempProperty.getName()+":" + tempProperty.getValue());
-					}
-					RefreshDisplayValues();
-					if(observablePropertyIndex > temp.size())
-					{
-						tableProperties.getSelectionModel().selectLast();
-						describeProperty();
-					}else
-					{
-						tableProperties.getSelectionModel().select(observablePropertyIndex);
-						describeProperty();
-					}
-					return;
-
+					temp.remove(pr);
+					fxVerbose("Property deleted.");
+					//System.out.println("[CLIENT] Property removed." + tempProperty.getName()+":" + tempProperty.getValue());
+					break;
 			}
 		}
-		loadedProperties=temp;
+			loadedProperties = temp;
+			RefreshDisplayValues();
+			fxVerbose("observablePropertyIndex=" + observablePropertyIndex);
+		//	tableCommands.getSelectionModel().selectLast();
+			if(temp.size() > 0 && observablePropertyIndex < 0 )
+			{
+				tableProperties.getSelectionModel().selectLast();
+
+			}else
+			{
+				tableProperties.getSelectionModel().select(observablePropertyIndex);
+
+			}
+			describeProperty();
 
 	}
 
-	@FXML public void setStatusLabetText(String message)
+	@FXML public void deleteCommand()
 	{
-		this.statusLabel.setText(message);
+		List<CommandModel> temp = loadedCommands;
+		//tableCommands.getSelectionModel().getSelectedItem();
+		for(CommandModel m : temp)
+		{
+			if(m.getId()==observableCommand.getId())
+			{
+				temp.remove(m);
+				fxVerbose("Command deleted.");
+				break;
+			}
+
+		}
+		loadedCommands = temp;
+		RefreshDisplayValues();
+		fxVerbose("observableCommandIndex=" + observableCommandIndex);
+	//	tableCommands.getSelectionModel().selectLast();
+		if(temp.size() > 0 && observableCommandIndex < 0 )
+		{
+			tableCommands.getSelectionModel().selectLast();
+
+		}else
+		{
+			tableCommands.getSelectionModel().select(observableCommandIndex);
+
+		}
+		descibeCommand();
+
 	}
 
 	@FXML public void addCommand()
@@ -477,16 +522,30 @@ public class MainClientController implements Initializable {
 			if(m.getId()>maxId)maxId=m.getId();
 		}
 		CommandModel tempCommand = new CommandModel(maxId+1, "New command", false, 1);
-		//tempCommand.setCommandContext("New command");
-		//tempCommand.setActive(false);
-		//tempCommand.setType(1);
-
-		//tempCommand.setId(max+1);
 
 		loadedCommands.add(tempCommand);
-		statusLabel.setText("Count:"+String.valueOf(loadedCommands.size()));
+		fxVerbose("Added comand with id "+tempCommand.getId()+", total="+loadedCommands.size());
 		RefreshDisplayValues();
+		tableCommands.getSelectionModel().selectLast();
+		descibeCommand();
 
+	}
+
+	int i = 0;
+	@FXML void testButtonAction()
+	{
+		fxVerbose("test button action...");
+		DateFormat timeFormat = new SimpleDateFormat( "HH:mm:ss" );
+		final Timeline timeline = new Timeline(
+		    new KeyFrame(
+		        Duration.millis( 1000 ),
+		        event -> {
+		            dateTimeLabel.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		        }
+		    )
+		);
+		timeline.setCycleCount( Animation.INDEFINITE );
+		timeline.play();
 	}
 
 
@@ -504,6 +563,21 @@ public class MainClientController implements Initializable {
 			   }
 		}
 		);
+
+		DateFormat timeFormat = new SimpleDateFormat( "HH:mm:ss" );
+		final Timeline timeline = new Timeline(
+		    new KeyFrame(
+		        Duration.millis( 1000 ),
+		        event -> {
+		            dateTimeLabel.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		        }
+		    )
+		);
+		timeline.setCycleCount( Animation.INDEFINITE );
+		timeline.play();
+
+
+
 
 
         columnCommand.setCellValueFactory(

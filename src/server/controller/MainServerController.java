@@ -35,7 +35,6 @@ public class MainServerController {
 	 * @return true if bash got started, but your command may have failed.
 	 */
 	public static String executeBashCommand(String command) {
-	    boolean success = false;
 	    String output="";
 	    System.out.println("Executing BASH command:   " + command);
 	    Runtime r = Runtime.getRuntime();
@@ -46,11 +45,15 @@ public class MainServerController {
 	    // so having bash here makes it happy provided bash is installed and in path.
 	    String[] commands = {"bash", "-c", command};
 	    try {
-	      Process p = Runtime.getRuntime().exec(new String[] { "/bin/bash", "-c", command });
-	        //ProcessBuilder p = new ProcessBuilder("/bin/bash", scriptPath + script).start();
 
-	        BufferedReader b = new BufferedReader(new InputStreamReader(p.getInputStream()));
-	        BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+	      //Process p = Runtime.getRuntime().exec(new String[] { "/bin/bash", "-c", command });
+	        //ProcessBuilder p = new ProcessBuilder("/bin/bash", scriptPath + script).start();
+	    	ProcessBuilder pb = new ProcessBuilder("/bin/bash", "-c", command);
+	    	Process proc=pb.start();
+
+
+	        BufferedReader b = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+	        BufferedReader err = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
 	        String line = "";
 
 	        while ((line = b.readLine()) != null) {
@@ -64,9 +67,9 @@ public class MainServerController {
 	            output+=line+"\n";
 	        }
 	        err.close();
-	        p.waitFor();
+	        //pb.waitFor();
 
-	        success = true;
+
 	    } catch (Exception e) {
 	        System.err.println("[SERVER] Failed to execute bash command: " + command);
 	        e.printStackTrace();

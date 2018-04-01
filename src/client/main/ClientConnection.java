@@ -65,7 +65,8 @@ public class ClientConnection {
     				else System.out.println("DDeserializer NOT available");
 
     			System.out.println("STRING SIMPLE NAME="+model.getClass().getSimpleName());
-    			if (model.getClass().getSimpleName().compareTo("String") == 0) {
+    			if (model.getClass().getSimpleName().compareTo("String") == 0) 
+    			{
     				System.out.println("MOdel="+model);
     				if (((String)model).compareTo("FINISH") == 0)
     				{
@@ -74,7 +75,6 @@ public class ClientConnection {
     					break;
     				}
     			}
-    			//Thread.sleep(1000);
     		}
     		while(cok.isConnected() && !cok.isInputShutdown());
 
@@ -89,10 +89,6 @@ public class ClientConnection {
 					System.out.println(p.getName()+":"+p.getValue());
 				}
 			}
-    		//serializer.flush();
-    		//deserializer.close();
-    		//serializer.close();
-    		//cok.close();
 
     	}
     	catch(IOException ex)
@@ -105,6 +101,31 @@ public class ClientConnection {
 		return l;
 
     }
+
+    public static boolean sendCommands(List<CommandModel> loadedCommands) throws UnknownHostException, IOException {
+    	connection();
+    	System.out.println("[CLIENT] Sending commands list to server...");
+    	try
+    	{
+    		serializer.writeObject("SendComm");
+    		for(CommandModel m: loadedCommands)
+    		{
+    			serializer.writeObject(m);
+    		}
+    		serializer.writeObject("FINISH");
+			cok.shutdownInput();
+			cok.close();
+			System.err.println("[CLIENT] Connection closed, command list sent.");
+			return true;
+    	}
+    	catch(Exception e)
+    	{
+    		System.err.println("[CLIENT] Failed to save command list. Aboring");
+    	}
+    	return false;
+
+	}
+
 
     public static String SendCommandString(String script) throws IOException
     {
@@ -139,5 +160,7 @@ public class ClientConnection {
 
 
     }
+
+
 
 }

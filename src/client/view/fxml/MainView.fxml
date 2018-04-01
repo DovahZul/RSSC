@@ -16,6 +16,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="550.0" minWidth="700.0" prefHeight="550.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.fxml.MainClientController">
   <center>
@@ -42,8 +43,9 @@
                               <Button layoutX="122.0" layoutY="216.0" mnemonicParsing="false" onAction="#rewriteObservableProperty" prefHeight="26.0" prefWidth="106.0" text="Add/Rewrite" AnchorPane.rightAnchor="72.0" />
                               <Label layoutX="11.0" layoutY="201.0" text="Name" />
                               <Label layoutX="11.0" layoutY="243.0" text="Value" />
-                              <Button layoutX="9.0" layoutY="295.0" mnemonicParsing="false" onAction="#addCommand" text="New command" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
+                              <Button layoutX="5.0" layoutY="289.0" mnemonicParsing="false" onAction="#addCommand" text="New command" AnchorPane.bottomAnchor="36.0" AnchorPane.leftAnchor="5.0" />
                               <Button fx:id="buttonSave" layoutX="183.0" layoutY="290.0" mnemonicParsing="false" onAction="#rewriteObservableCommand" prefHeight="26.0" prefWidth="106.0" text="Apply" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                              <Button layoutX="11.0" layoutY="327.0" mnemonicParsing="false" onAction="#deleteCommand" text="Delete Command" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
                            </children>
                         </AnchorPane>
                      </right>
@@ -53,8 +55,8 @@
                               <TextField fx:id="fieldCommandContext" layoutX="14.0" layoutY="31.0" prefHeight="26.0" prefWidth="379.0" AnchorPane.bottomAnchor="69.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
                               <CheckBox fx:id="checkBoxEnabled" layoutX="5.0" layoutY="41.0" mnemonicParsing="false" text="Enabled" AnchorPane.bottomAnchor="41.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="41.0" />
                               <Button layoutX="395.0" layoutY="5.0" mnemonicParsing="false" text="Select file" />
-                              <Button layoutX="599.0" layoutY="37.0" mnemonicParsing="false" onAction="#loadCommands" prefHeight="26.0" prefWidth="108.0" text="Load/Update" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="5.0" />
-                              <Button layoutX="599.0" layoutY="73.0" mnemonicParsing="false" text="Save changes" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                              <Button layoutX="599.0" layoutY="37.0" mnemonicParsing="false" onAction="#loadCommands" prefHeight="26.0" prefWidth="108.0" text="Load/Reset" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="5.0" />
+                              <Button layoutX="599.0" layoutY="73.0" mnemonicParsing="false" onAction="#saveCommands" text="Save to server" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
                            </children>
                         </AnchorPane>
                      </top>
@@ -135,7 +137,12 @@
    <bottom>
       <AnchorPane>
          <children>
-            <Label fx:id="statusLabel" text="Label" AnchorPane.leftAnchor="5.0" BorderPane.alignment="CENTER" />
+            <TextArea fx:id="infoOutputArea" maxHeight="35.0" prefHeight="35.0" prefWidth="367.0" wrapText="true" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="1.0">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </TextArea>
+            <Label fx:id="dateTimeLabel" layoutX="375.0" layoutY="15.0" text="Mon" AnchorPane.bottomAnchor="5.0" AnchorPane.topAnchor="5.0" />
          </children>
       </AnchorPane>
    </bottom>
