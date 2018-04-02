@@ -21,6 +21,7 @@ import client.model.Property;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -47,6 +48,7 @@ public class MainClientController implements Initializable {
 	@FXML TabPane mainTabPane;
 
 	@FXML TableView tableCommands;
+	@FXML TableColumn<CommandModel, String> columnId;
 	@FXML TableColumn<CommandModel, String> columnCommand;
 	@FXML TableColumn<CommandModel, String> columnType;
 	@FXML TableColumn<CommandModel, String> columnEnabled;
@@ -84,8 +86,11 @@ public class MainClientController implements Initializable {
 
 	public static List<CommandModel> loadedCommands;
 	public static CommandModel observableCommand;
+
 	public static List<CommandProperty> loadedProperties;
 	public static CommandProperty observableProperty;
+
+	public static List<Integer> deletedCommands =  new ArrayList<Integer>();
 	private static ObservableList<CommandModel> commandList = FXCollections.observableArrayList();
 	private static ObservableList<CommandProperty> propertiesList = FXCollections.observableArrayList();
 
@@ -97,7 +102,7 @@ public class MainClientController implements Initializable {
 		String temp = "";
 		for(CommandProperty item: p)
 		{
-			if(item.getName().compareTo(propertyName)==0)
+			if(item!=null && item.getName().compareTo(propertyName)==0)
 			{
 				temp+=item.getValue()+",";
 			}
@@ -120,6 +125,10 @@ public class MainClientController implements Initializable {
 		try
 		{
 			loadedCommands = ClientConnection.getCommands();
+			if(deletedCommands!=null)
+				{
+					deletedCommands.clear();
+				}
 			RefreshDisplayValues();
 			fxVerbose("Commands loaded.");
 		}
@@ -133,7 +142,7 @@ public class MainClientController implements Initializable {
 	@FXML
 	void saveCommands() throws UnknownHostException, IOException
 	{
-		if(ClientConnection.sendCommands(loadedCommands))
+		if(ClientConnection.sendCommands(loadedCommands) && ClientConnection.sendDeletedId(deletedCommands))
 		{
 			fxVerbose("Commands saved to server.");
 		}else
@@ -297,18 +306,40 @@ public class MainClientController implements Initializable {
 	@FXML
 	public void rewriteObservableCommand()
 	{
+		if(observableCommand == null || observableCommand.getId() < 0)
+			{
+			fxVerbose("Aborting rewriteOvservableCommand!");
+			return;
+			}
 		//CommandModel tempCommand = new CommandModel(this.fieldCommandContext.getText(), t, null);
 		//fxVerbose(String.valueOf(observableCommand.getId()));
-		if(this.fieldCommandContext.getText().compareTo(MainClientController.observableCommand.getCommand())!=0)
+		if(this.fieldCommandContext.getText().compareTo(observableCommand.getCommand())!=0
+				|| this.checkBoxEnabled.isSelected()!=observableCommand.isActive())
 		{
-			loadedCommands.get(observableCommand.getId()-1) .setCommandContext((this.fieldCommandContext.getText()));
+			for(CommandModel foredit : loadedCommands)
+			{
+				if(foredit.getId()==observableCommand.getId())
+				{
+					foredit.setActive(this.checkBoxEnabled.isSelected());
+					foredit.setCommandContext(this.fieldCommandContext.getText());
+					//descibeCommand();
+
+					//foredit.setType();
+				}
+
+			}
+			//fxVerbose("Observable command active:"+observableCommand.isActive());
+
 		}
-		//if(this.checkBoxEnabled.isSelected() && observableCommand.isActive())
-		//{
-			loadedCommands.get(observableCommand.getId()-1) .setActive(checkBoxEnabled.isSelected());
-		//}
 
 		RefreshDisplayValues();
+		if(observableCommandIndex > loadedCommands.size())
+		{
+			tableCommands.getSelectionModel().selectLast();
+		}else
+		{
+			tableCommands.getSelectionModel().select(observableCommandIndex);
+		}
 
 	}
 
@@ -491,6 +522,7 @@ public class MainClientController implements Initializable {
 		{
 			if(m.getId()==observableCommand.getId())
 			{
+				deletedCommands.add(observableCommand.getId());
 				temp.remove(m);
 				fxVerbose("Command deleted.");
 				break;
@@ -576,6 +608,8 @@ public class MainClientController implements Initializable {
 		timeline.setCycleCount( Animation.INDEFINITE );
 		timeline.play();
 
+
+		columnId.setCellValueFactory( val -> new SimpleStringProperty(String.valueOf(val.getValue().getId())));
 
 
 

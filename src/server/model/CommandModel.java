@@ -157,6 +157,8 @@ public class CommandModel implements Serializable{
 			//System.out.println("properties count:"+command_properties.size());
 			int mydata = -1;
 
+			try
+			{
 			switch(item.getName()){
 				case "second":
 					//second.add(item.getValue());
@@ -212,6 +214,7 @@ public class CommandModel implements Serializable{
 						month.add(item.getValue());
 					break;
 			}
+			}catch(NullPointerException e){}
 
 			//if(item.getValue()==second || item.getValue()==minute)
 			//if(item.getValue()==-1)return true;

@@ -17,6 +17,7 @@ public class ServerMainThread extends Thread{
 	private final String SCRIPTS_PATH= "";
 	private final String DB_PATH="";
 	private final String port = "8073";
+	private static List<CommandModel> regularCommands;
 
 
 	public static void main(String[] args) {
@@ -27,20 +28,25 @@ public class ServerMainThread extends Thread{
 	public ServerMainThread(){
 
 	}
+	public static void updateRegularCommands()
+	{
+		regularCommands = DataBaseManager.getRegularCommads();
+	}
 
 	public void run() {
 		System.out.println("starting main thread");
 		try {
-			List<CommandModel> ls = DataBaseManager.getRegularCommads();
+
 
 			System.out.println("main server thread is running...");
 				while(true)
 				{
+					regularCommands = DataBaseManager.getRegularCommads();
 					//System.out.println("main server thread is running...");
 					//System.out.println(Calendar.getInstance().getTimeInMillis());
 					Thread.sleep(1000);
 
-					for(CommandModel item : ls)
+					for(CommandModel item : regularCommands)
 					{
 						CommandProperty[] mass = item.getProperties();
 

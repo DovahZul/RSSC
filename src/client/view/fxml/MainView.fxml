@@ -44,7 +44,6 @@
                               <Label layoutX="11.0" layoutY="201.0" text="Name" />
                               <Label layoutX="11.0" layoutY="243.0" text="Value" />
                               <Button layoutX="5.0" layoutY="289.0" mnemonicParsing="false" onAction="#addCommand" text="New command" AnchorPane.bottomAnchor="36.0" AnchorPane.leftAnchor="5.0" />
-                              <Button fx:id="buttonSave" layoutX="183.0" layoutY="290.0" mnemonicParsing="false" onAction="#rewriteObservableCommand" prefHeight="26.0" prefWidth="106.0" text="Apply" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
                               <Button layoutX="11.0" layoutY="327.0" mnemonicParsing="false" onAction="#deleteCommand" text="Delete Command" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
                            </children>
                         </AnchorPane>
@@ -57,6 +56,7 @@
                               <Button layoutX="395.0" layoutY="5.0" mnemonicParsing="false" text="Select file" />
                               <Button layoutX="599.0" layoutY="37.0" mnemonicParsing="false" onAction="#loadCommands" prefHeight="26.0" prefWidth="108.0" text="Load/Reset" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="5.0" />
                               <Button layoutX="599.0" layoutY="73.0" mnemonicParsing="false" onAction="#saveCommands" text="Save to server" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                              <Button layoutX="14.0" layoutY="69.0" mnemonicParsing="false" onAction="#rewriteObservableCommand" text="Apply command changes" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
                            </children>
                         </AnchorPane>
                      </top>
@@ -65,6 +65,7 @@
                            <children>
                               <TableView fx:id="tableCommands" minWidth="300.0" onMouseClicked="#descibeCommand" prefHeight="372.0" prefWidth="1025.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <columns>
+                                    <TableColumn fx:id="columnId" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="ID" />
                                     <TableColumn fx:id="columnCommand" minWidth="100.0" prefWidth="100.0" text="Command" />
                                     <TableColumn fx:id="columnType" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="Type" />
                                     <TableColumn fx:id="columnEnabled" maxWidth="70.0" minWidth="70.0" prefWidth="83.0" text="Enabled" />

@@ -13,6 +13,8 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.corba.se.pept.transport.Connection;
+
 import server.controller.MainServerController;
 import server.model.CommandModel;
 import server.model.CommandProperty;
@@ -46,7 +48,8 @@ public class ServerControlThread extends Thread{
 
 
 
-			while((str = (String)deserializer.readObject()) != null){
+			while((str = (String)deserializer.readObject()) != null)
+			{
 				System.out.println("[SERVER]thread-listener is running...");
 
 				if(str.length()>13)
@@ -68,7 +71,7 @@ public class ServerControlThread extends Thread{
 				}else
 				if("GetComm".equals(str))
 				{
-					System.out.println("{SERVER] SENDING COMMANDS FOR CLIENT...");
+					System.out.println("[SERVER] SENDING COMMANDS FOR CLIENT...");
 					List<CommandModel> l=DataBaseManager.getRegularCommads();
 					//serializer.writeObject(l);
 
@@ -92,6 +95,7 @@ public class ServerControlThread extends Thread{
 
 					return;
 				}else
+					///////SAVING
 				if("SendComm".equals(str))
 				{
 					System.out.println("[SERVER] receiving command list from client...");
@@ -135,21 +139,67 @@ public class ServerControlThread extends Thread{
 					System.out.println("[SERVER] got commands from client:");
 		    		for(CommandModel item : tempCommandList)
 					{
-						System.out.println(item.getCommand()+":"+item.getType()+":"+item.isActive());
+						System.out.println("ID:"+item.getId()+":"+item.getCommand()+":"+item.getType()+":"+item.isActive());
 						System.out.println("Properties count="+item.getProperties().length);
 						for(CommandProperty p : item.getProperties())
 						{
 							System.out.println(p.getName()+":"+p.getValue());
 						}
 					}
+		    		DataBaseManager.saveRegularCommands(tempCommandList);
 
+
+				}else
+					////PROCEEDING DELETED
+					if("SendDelComm".equals(str))
+					{
+						System.out.println("[SERVER] receiving deleted ID command list from client...");
+						List<Integer> tempCommandList = new ArrayList<>();
+						Object model = "";
+						try
+						{
+							do
+							{
+								if(is.available() > 0)
+								{
+				    				model=deserializer.readObject();
+				    				System.out.println("ПОПАЛИ В readObj");
+				    				if (model.getClass().getSimpleName().compareTo("Integer") == 0)
+				    					tempCommandList.add((Integer)model);
+				    			}
+				    				else System.out.println("Deserializer NOT available");
+
+								System.out.println("STRING SIMPLE NAME="+model.getClass().getSimpleName());
+				    			if (model.getClass().getSimpleName().compareTo("String") == 0)
+				    			{
+				    				System.out.println("Model="+model);
+				    				if (((String)model).compareTo("FINISH") == 0)
+				    				{
+
+				    					System.out.println("STOP STRING COMMAND");
+				    					break;
+				    				}
+				    			}
+				    		}
+				    		while(socket.isConnected() && !socket.isInputShutdown());
+
+
+
+						}
+						catch(Exception e)
+						{
+
+						}
+
+						System.out.println("[SERVER] got commands from client:");
+			    		for(Integer item : tempCommandList)
+						{
+							System.out.println("ID:"+item);
+						}
+			    		DataBaseManager.deleteCommandsById(tempCommandList);
 				}
-
-
-				//Thread.sleep(10000);
-				//return;
-
 			}
+
 
 		} catch (IOException e) {
 			//System.out.println("[SERVER]");

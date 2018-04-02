@@ -65,7 +65,7 @@ public class ClientConnection {
     				else System.out.println("DDeserializer NOT available");
 
     			System.out.println("STRING SIMPLE NAME="+model.getClass().getSimpleName());
-    			if (model.getClass().getSimpleName().compareTo("String") == 0) 
+    			if (model.getClass().getSimpleName().compareTo("String") == 0)
     			{
     				System.out.println("MOdel="+model);
     				if (((String)model).compareTo("FINISH") == 0)
@@ -103,6 +103,17 @@ public class ClientConnection {
     }
 
     public static boolean sendCommands(List<CommandModel> loadedCommands) throws UnknownHostException, IOException {
+
+    	System.out.println("[CLIENT] final commandList is:");
+    	for(CommandModel m : loadedCommands)
+    	{
+    		System.out.println("ID:"+m.getId());
+    		System.out.println("Command:"+m.getCommand());
+    		System.out.println("Type:"+m.getType());
+    		System.out.println("Active:"+m.isActive());
+    	}
+
+
     	connection();
     	System.out.println("[CLIENT] Sending commands list to server...");
     	try
@@ -123,6 +134,8 @@ public class ClientConnection {
     		System.err.println("[CLIENT] Failed to save command list. Aboring");
     	}
     	return false;
+
+
 
 	}
 
@@ -160,6 +173,36 @@ public class ClientConnection {
 
 
     }
+
+	public static boolean sendDeletedId(List<Integer> deletedCommands) throws UnknownHostException, IOException
+	{
+		System.out.println("[CLIENT]Deleted command ID's is:");
+    	for(Integer m : deletedCommands)
+    	{
+    		System.out.println("ID:"+m);
+    	}
+    	connection();
+    	System.out.println("[CLIENT] Sending commands list to server...");
+    	try
+    	{
+    		serializer.writeObject("SendDelComm");
+    		for(Integer index: deletedCommands)
+    		{
+    			serializer.writeObject(index);
+    		}
+    		serializer.writeObject("FINISH");
+			cok.shutdownInput();
+			cok.close();
+			System.err.println("[CLIENT] Connection closed, deleted ID's list sent.");
+			return true;
+    	}
+    	catch(Exception e)
+    	{
+    		System.err.println("[CLIENT] Failed to send deleted ID's list. Aboring");
+    	}
+    	return false;
+
+	}
 
 
 
