@@ -145,13 +145,11 @@ public class CommandModel implements Serializable{
 
 	public boolean haveToExecute()
 	{
-		//System.out.println("command_properties:"+command_properties);
-		//MainController.executeBashCommand("notify-send \"My name is bash and I rock da hous\"");
-		//if(command_properties.size()<=0)return true;
-
+		if(command_properties.size()<=0)return true;
+		if (!this.active)return false;
 		for(CommandProperty item : command_properties)
 		{
-		//	if (!this.active)return false;
+
 
 			//System.out.println("ITEM:"+item.getName()+":"+item.getValue());
 			//System.out.println("properties count:"+command_properties.size());

@@ -357,14 +357,11 @@ public class MainClientController implements Initializable {
 			for(CommandProperty pr: temp)
 			{
 
-				/*adding or rewriting existing property*/
+				/*adding new or rewriting existing property*/
 				if(pr.getName().compareTo(tempProperty.getName())==0 && pr.getValue()==tempProperty.getValue())
 				{
-					//if(pr.getValue()==tempProperty.getValue())
-					//{
-						System.out.println("[CLIENT] Such property already exists. Aborting");
+						fxVerbose("Such property already exists. Aborting");
 						return;
-					//}
 				}
 
 				//Adding new property
@@ -375,11 +372,11 @@ public class MainClientController implements Initializable {
 						if(tempProperty.getValue() >=- 1 && tempProperty.getValue() <= 60)
 						{
 							tempProperty.setValue(Integer.parseInt( fieldPropertyValue.getText() ));
-							System.out.println("[CLIENT] added new property:"+observableCommand.getId()+":"+fieldPropertyName.getText()+
+							fxVerbose("Added new property:"+observableCommand.getId()+":"+fieldPropertyName.getText()+
 									":"+fieldPropertyValue.getText());
 						}else
 						{
-							System.out.println("[CLIENT] Wrong second value! Aborting.");
+							fxVerbose("Wrong second value! Aborting.");
 							return;
 						}
 							break;
@@ -554,6 +551,7 @@ public class MainClientController implements Initializable {
 			if(m.getId()>maxId)maxId=m.getId();
 		}
 		CommandModel tempCommand = new CommandModel(maxId+1, "New command", false, 1);
+		//deletedCommands.remove((Object)maxId);
 
 		loadedCommands.add(tempCommand);
 		fxVerbose("Added comand with id "+tempCommand.getId()+", total="+loadedCommands.size());

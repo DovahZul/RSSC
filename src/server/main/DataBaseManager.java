@@ -71,16 +71,7 @@ public abstract class DataBaseManager
 			e.printStackTrace();
 
 		}
-/*
-	    try {
-	      connection = DriverManager.getConnection(DB_URL, USER, PASS);
 
-	    } catch (SQLException e) {
-	      System.out.println("Connection Failed");
-	      e.printStackTrace();
-	      return;
-	    }
-*/
 	}
 
 	public static List<CommandModel> getRegularCommads()
@@ -114,44 +105,95 @@ public abstract class DataBaseManager
 		return new ArrayList<>(commands.values());
 
 	}
+	public static List<CommandProperty> validateProperties(int idComm, List<CommandProperty> arr)
+	{
+		List<CommandProperty> temp=arr;
+		boolean second=false;
+		boolean minute=false;
+		boolean hour=false;
+		boolean day=false;
+		boolean month=false;
+		for(CommandProperty property : temp)
+		{
+			switch(property.getName())
+			{
+			case "second":
+				second=true;
+			break;
+			case "minute":
+				minute=true;
+			break;
+			case "hour":
+				hour=true;
+			break;
+			case "day":
+				day=true;
+			break;
+			case "month":
+				month=true;
+			break;
+			}
+		}
+		if(!second)temp.add(new CommandProperty(idComm, "second",-1));
+		if(!minute)temp.add(new CommandProperty(idComm, "minute",-1));
+		if(!hour)temp.add(new CommandProperty(idComm, "hour",-1));
+		if(!day)temp.add(new CommandProperty(idComm, "day",-1));
+		if(!month)temp.add(new CommandProperty(idComm, "month",-1));
+		return temp;
+	}
+
+
 	public static void savePropertiesForCommand(CommandModel command)
 	{
-		for(CommandProperty property : command.getProperties())
+		System.out.println("[SERVER] Saving property for command_id="+command.getId()+"...count = "+command.getProperties().length);
+
+
+
+			//deleting old properties with current id_command
+
+
+			SqlPrepared prepDelete = (stat) ->
+			{
+				try
+				{
+					stat.setInt(1, command.getId());
+				}catch(SQLException e)
+				{
+					System.out.println("[SERVER] Failed while saving property to DB.(part of another save) "+ e);
+				}
+			};
+			DataBaseManager.executePreparedQuery("DELETE FROM properties WHERE id_command = ? ", prepDelete);
+
+
+
+
+			//Filling with new values
+		for(CommandProperty property : validateProperties(command.getId(), command.getPropertiesList()))
 		{
 			SqlPrepared prep = (stat) ->
 			{
 				try
 				{
 					//stat.setInt(1, command.getId());
-					stat.setInt(1, property.getValue());
-					stat.setInt(2, command.getId());
-					stat.setString(3, property.getName());
+					stat.setString(1, property.getName());
+					stat.setInt(2, property.getValue());
+					stat.setInt(3, command.getId());
 				}catch(SQLException e)
 				{
 					System.out.println("[SERVER] Failed while saving property to DB.(part of another save) "+ e);
 				}
 			};
-			DataBaseManager.executePreparedQuery("UPDATE properties SET "+
-					//"property=?,"										+
-					"value=?"											+
-					"WHERE id_command=? AND property=?"
+			DataBaseManager.executePreparedQuery("INSERT INTO properties ("+
+					"property,"										+
+					"value,"										+
+					"id_command"									+
+					") VALUES "										+
+					"(?,?,?)"
+					//"WHERE id_command = ?"
 					, prep);
+
 				}
 	}
-
-	public static <T> List<T> subtract(List<T> list1, List<T> list2)
-	{
-		List<T> result = new ArrayList<T>();
-		Set<T> set2 = new HashSet<T>(list2);
-		for (T t1 : list1) {
-			if( !set2.contains(t1) ) {
-				result.add(t1);
-			}
-		}
-		return result;
-	}
-
-
 
 	public static void deleteCommandsById(List<Integer> tempCommandList)
 	{
@@ -174,91 +216,11 @@ public abstract class DataBaseManager
 
 	public static void saveRegularCommands(List<CommandModel> list)
 	{
-		//List<CommandModel> original=DataBaseManager.getRegularCommads();
-		//DataBaseManager.executeSimpleQuery("DELETE from commands");
-			//System.out.println("[DB MANAGER] COMMANDS FOR REMOVING:");
-
-		//List<CommandModel> delete = null;
-
-		//System.out.println("[DB MANAGER] COMMANDS FOR REMOVING:"+list.size()+":"+original.size());
-
-
-
+		//DataBaseManager.executeSimpleQuery("DELETE * FROM properties");
 		for(CommandModel command : list)
 		{
-			/*
-			boolean flag=true;
-
-			if(list!=original)System.out.println("[DB MANAGER] original difference with new list!");
-			else System.out.println("[DB MANAGER] no difference between original and new list!");
-			if(list.size() >= original.size())
-			{
-				System.out.println("[DB MANAGER] original <= new list, flag=false");
-				//flag=false;
-			}else
-			{
-			for(CommandModel rem : original)
-			{
-
-				//System.out.println("flag ID:"+flag);
-
-					//flag=true;
-				if(command.getId()==rem.getId())
-				{
-					System.out.println("exists, not deleting:");
-					System.out.println("ID:"+rem.getId());
-					System.out.println("command:"+rem.getCommand());
-
-					flag=false;
-					//delete.add(rem);
-					//break;
-
-				}
-			}
-			System.out.println("[DB MANAGER]flag= "+ flag);
-			if(flag)
-			{
-				System.out.println("[DB MANAGER] DELETING COMMAND: "+ command.getId());
-				SqlPrepared prep3 = (stat) ->
-				{
-					try
-					{
-						stat.setInt(1, command.getId());
-
-					}catch(SQLException e)
-					{
-						System.out.println("[SERVER] Failed while deleting from DB. "+ e);
-					}
-				};
-				DataBaseManager.executePreparedQuery("DELETE FROM commands "+
-				"WHERE id_command = ?", prep3);
-
-			}
-
-			}
-			*/
-
+			//down there
 			//savePropertiesForCommand(command);
-			/*
-			for(CommandModel rem : original)
-			{
-				if(!list.contains(rem))
-			SqlPrepared prep3 = (stat) ->
-			{
-				try
-				{
-					stat.setInt(1, rem.getId());
-
-				}catch(SQLException e)
-				{
-					System.out.println("[SERVER] Failed while deleting to DB. "+ e);
-				}
-			};
-			DataBaseManager.executePreparedQuery("DELETE FROM commands "+
-			"WHERE id_command = ?", prep3);
-
-			}
-			*/
 
 			SqlPrepared prep2 = (stat) ->
 			{
@@ -304,20 +266,15 @@ public abstract class DataBaseManager
 			"active=?"													+
 			"WHERE id_command=?"
 			, prep);
-
-
-
-
+			savePropertiesForCommand(command);
 		}
-
-
 	}
 
 	public static boolean executeSimpleQuery(String query)
 		{
 			try
 			{
-				Statement  statement  = connection.createStatement();
+				Statement  statement = connection.createStatement();
 				statement.executeUpdate(query);
 				statement.close();
 			}
