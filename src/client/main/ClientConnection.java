@@ -8,11 +8,15 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import server.model.CommandModel;
-import server.model.CommandProperty;
+import server.model.CommandModel;  // modularity violation, to fix
+import server.model.CommandProperty; // modularity violation, to fix
 
 /**
- * Created by user on 02.12.2016.
+ * 
+ * 
+ * Connection handler class from the client side
+ * @author dovahzul
+ *
  */
 public class ClientConnection {
     public static Socket cok = null;
