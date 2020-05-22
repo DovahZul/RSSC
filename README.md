@@ -21,6 +21,7 @@ Server side holds its own database with scheduled commands, which can be execute
         mvn -f client_pom.xml 
 
 * run jar  
+
         cd target
         java -jar RSSC...
 
