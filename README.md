@@ -2,7 +2,7 @@
 ### Client-server application developed using javaFX and SQlite.<br />
 #### Set up & execution of regular bash commands from the remote client.<br />    
 -------
-#### How do i use this?\
+#### How do i use this?  
 The tool is purposed for custom enviromantal script schedule kind of [crond](https://en.wikipedia.org/wiki/Cron) (no support for Windows yet).
 Server side holds its own database with scheduled commands, which can be executed once, or repetitively.
 
@@ -21,8 +21,8 @@ Server side holds its own database with scheduled commands, which can be execute
         mvn -f client_pom.xml 
 
 * run jar  
-
-        java -jar target/RSSC...
+        cd target
+        java -jar RSSC...
 
 ##### Dependencies
 + Server
