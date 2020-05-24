@@ -14,16 +14,13 @@ Server side holds its own database with scheduled commands, which can be execute
 
 * for server side:  
 
-        mvn -f server_pom.xlm 
+        mvn -f server_pom.xlm clean package
+        java -jar target/Server-RSSC...
 
 * for client side:  
 
-        mvn -f client_pom.xml 
-
-* run jar:  
-
-        cd target
-        java -jar RSSC...
+        mvn -f client_pom.xml clean package
+        java -jar target/Client-RSSC...
 
 ##### Dependencies
 + Server
