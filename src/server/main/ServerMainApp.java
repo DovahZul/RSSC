@@ -1,17 +1,9 @@
 package server.main;
 
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Connection;
 import java.util.Properties;
-
-import com.sun.javafx.runtime.SystemProperties;
-
-import javafx.application.Application;
-import javafx.scene.*;
-
 
 public class ServerMainApp{
 
