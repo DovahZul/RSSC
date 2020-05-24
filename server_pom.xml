@@ -14,10 +14,10 @@
 	</dependencies>
 	<profiles></profiles>
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+		<sourceDirectory>src/server</sourceDirectory>
 		<resources>
 			<resource>
-				<directory>src</directory>
+				<directory>src/server</directory>
 				<excludes>
 					<exclude>**/*.java</exclude>
 				</excludes>
