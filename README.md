@@ -14,7 +14,7 @@ Server side holds its own database with scheduled commands, which can be execute
 
 * for server side:  
 
-        mvn -f server_pom.xlm clean package
+        mvn -f server_pom.xml clean package
         java -jar target/Server-RSSC...
 
 * for client side:  
