@@ -1,5 +1,10 @@
 package server.main;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -17,25 +22,26 @@ import server.model.CommandModel;
 import server.model.CommandProperty;
 
 public abstract class DataBaseManager
-{
-
-	private static String DBPath = System.getProperty("user.dir")+ "/data";
+{	
+	private static String DBPath = "./server-data/tasks";
 	static final String DB_URL = "jdbc:postgresql://127.0.0.1:5432/data";
+	
+	@Deprecated
 	static final String USER = "postgres";
+	@Deprecated
 	static final String PASS = "1111";
 
-
-
-
 	private static Connection connection = null;
-
-	public static Connection getConnection(){
-
+	
+	public static Connection getConnection() {
+		
 		return connection;
 	}
 
 	public static void Init()
 	{
+
+		System.out.println("Database path: " + DBPath);
 		try
 		{
 			Class.forName("org.sqlite.JDBC");//set SQL driver
@@ -52,7 +58,7 @@ public abstract class DataBaseManager
 
 		try
 		{
-			boolean temp=executeSimpleQuery("CREATE DATABASE data");
+			boolean temp = executeSimpleQuery("CREATE DATABASE data");
 		}
 		catch(Exception e)
 		{
@@ -67,7 +73,7 @@ public abstract class DataBaseManager
 
 		} catch (SQLException e)
 		{
-			System.out.println("SQLException:"+e.getLocalizedMessage());
+			System.out.println("SQLException:" + e.getLocalizedMessage());
 			e.printStackTrace();
 
 		}
