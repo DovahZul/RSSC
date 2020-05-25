@@ -38,17 +38,18 @@ Server side holds its own database with scheduled commands, which will be execut
 ![Client main view](/screenshots/screenshot_client_main.png)
 
 Server can execute single-line commands directly from inner schedule.
-command has such properties as:
+Command has next properties:
 * active - enables or disables command;
-* timestamp properties - time values when command will be executed. 
-    + Possible time properties: 
-    * second (1-60 or -1 as ignore property)
-    * minute (1-60 or -1 as ignore property)
-    * hour (1-60 or -1 as ignore property)
-    * day (1-31 or -1 as ignore property) - day of current month according to local system date
-    * month (1-12 or -1 as ignore property) 
+* timestamp properties - time values when command will be executed;
+    + possible time properties: 
+      * second (1-60 or -1 as ignore property)
+      * minute (1-60 or -1 as ignore property)
+      * hour (1-60 or -1 as ignore property)
+      * day (1-31 or -1 as ignore property) - day of current month according to local system date
+      * month (1-12 or -1 as ignore property) 
 
-For example, "notify-send hello bash!" will be executed every 10, 20, 30, 40, 50, 60 second, i.e. every 10 seconds infinitely while server runs.
+For example, "notify-send hello bash" will be executed every 10, 20, 30, 40, 50, 60 second, i.e. every 10 seconds infinitely while server runs.
+To add and save new command to the task, use "New command", then "Apply command changes" and "Save to server".
 
 
 
