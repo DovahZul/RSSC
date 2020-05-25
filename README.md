@@ -35,6 +35,7 @@ Server side holds its own database with scheduled commands, which can be execute
 #### How to run tests
  - in progress
 #### User guide
- - in progress
+![Client main view](/screenshots/screenshot_client_main.png)
+
 
 
