@@ -16,6 +16,12 @@
 			<artifactId>javafx-fxml</artifactId>
 			<version>11.0.1</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.8.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -29,6 +35,14 @@
 			</resource>
 		</resources>
 		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
 			<!-- Copy dependencies to target/lib folder -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -56,6 +70,7 @@
 					<mainClass>client.main.ClientMainApp</mainClass>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 </project>
