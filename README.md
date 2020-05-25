@@ -34,5 +34,7 @@ Server side holds its own database with scheduled commands, which can be execute
  - in progress
 #### How to run tests
  - in progress
+#### User guide
+ - in progress
 
 
